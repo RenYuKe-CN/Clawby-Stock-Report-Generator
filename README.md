@@ -1,6 +1,6 @@
 # Clawby Stock Report Generator
 
-> AI-powered US equity analysis reports — backed by [Clawby](https://www.openclawby.com/) real-time financial data.
+> AI 驱动的美股分析报告 — 由 [Clawby](https://www.openclawby.com/) 实时金融数据提供支撑。
 
 [![CI](https://github.com/your-username/stock-report/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/stock-report/actions/workflows/ci.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -8,148 +8,148 @@
 [![Next.js 14](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/your-username/stock-report/pulls)
 
-> [中文文档](README.zh-CN.md)
+> [English](README.md)
 
 ---
 
-## Quick Start
+## 快速开始
 
 ```bash
-# 1. Clone
+# 1. 克隆仓库
 git clone <repository-url>
 cd stock-report
 
-# 2. Configure
+# 2. 配置环境
 cp .env.example .env
-# Edit .env → fill in CLAWBY_API_KEY and LLM_API_KEY
+# 编辑 .env → 填入 CLAWBY_API_KEY 和 LLM_API_KEY
 
-# 3. Launch with Docker
+# 3. 使用 Docker 启动
 bash setup.sh
 
-# 4. Open
+# 4. 打开浏览器
 open http://localhost:3000
 ```
 
-**Prerequisites:** Docker & Docker Compose, [Clawby API Key](https://www.openclawby.com/) (free), LLM API Key (OpenAI / Anthropic).
+**前置要求：** Docker & Docker Compose、[Clawby API Key](https://www.openclawby.com/)（免费）、LLM API Key（OpenAI / Anthropic）。
 
 ---
 
-## Features
+## 功能特性
 
-| | Feature | Description |
+| | 功能 | 描述 |
 |---|---|---|
-| 📊 | **Multi-dimensional data** | Quotes, OHLC bars, short data, dark pool, options chain, SEC filings, social sentiment, corporate actions |
-| 🤖 | **Multi-LLM support** | OpenAI / Anthropic / any OpenAI-compatible endpoint (DeepSeek, Ollama, Azure, Groq) — add and switch in the UI |
-| 📝 | **Customizable report templates** | 4 built-in templates + copy and customize your own prompts & sections |
-| 🎨 | **Interactive charts** | 5 Recharts visualizations — price action, short trends, dark pool, options chain, sentiment |
-| 📄 | **PDF export** | Print-ready A4 report with cover page, professional typography, page numbers |
-| 🔧 | **No database** | All data fetched in real-time from Clawby; zero setup |
-| 🐳 | **One-command deploy** | Docker Compose — single command to start everything |
+| 📊 | **多维度数据** | 实时行情、OHLC K线、做空数据、暗池交易、期权链、SEC 财报、社交情绪、公司事件 |
+| 🤖 | **多 LLM 支持** | OpenAI / Anthropic / 任何 OpenAI 兼容端点（DeepSeek、Ollama、Azure、Groq）— 在 UI 中添加和切换 |
+| 📝 | **可定制报告模板** | 4 个内置模板 + 复制并自定义你的提示词和章节 |
+| 🎨 | **交互式图表** | 5 个 Recharts 可视化 — 价格走势、做空趋势、暗池、期权链、情绪指数 |
+| 📄 | **PDF 导出** | 打印就绪的 A4 报告，包含封面、专业排版、页码 |
+| 🔧 | **无数据库设计** | 所有数据都从 Clawby 实时获取；零配置 |
+| 🐳 | **一键部署** | Docker Compose — 单一命令启动所有服务 |
 
 ---
 
-## Architecture
+## 系统架构
 
 ```
-Browser ──▶ Next.js 14 (Port 3000)
-                │
-                ▼
-          FastAPI (Port 8000)
-                │
-        ┌───────┴───────┐
-        ▼               ▼
-   Clawby API        LLM API
-   (market data)   (OpenAI/Anthropic)
+浏览器 ──▶ Next.js 14（端口 3000）
+              │
+              ▼
+        FastAPI（端口 8000）
+              │
+        ┌─────┴─────┐
+        ▼           ▼
+   Clawby API    LLM API
+   （市场数据）  （OpenAI/Anthropic）
 ```
 
-- **Frontend**: Next.js 14, React 18, Tailwind CSS, Recharts, Lucide icons
-- **Backend**: Python 3.11+, FastAPI, httpx, Jinja2, WeasyPrint
-- **Data**: Clawby API (real-time financial data)
-- **LLM**: OpenAI API / Anthropic API / any compatible endpoint
-- **Deploy**: Docker Compose
+- **前端**：Next.js 14、React 18、Tailwind CSS、Recharts、Lucide icons
+- **后端**：Python 3.11+、FastAPI、httpx、Jinja2、WeasyPrint
+- **数据源**：Clawby API（实时金融数据）
+- **LLM**：OpenAI API / Anthropic API / 任何兼容端点
+- **部署**：Docker Compose
 
 ---
 
-## How It Works
+## 工作流程
 
-1. **Enter a ticker** (e.g., AAPL, MSFT, TSLA) and click "Generate"
-2. **Backend fetches all dimensions** from Clawby in parallel (8+ concurrent API calls)
-3. **Data is assembled** into a structured context using Jinja2 prompt templates
-4. **LLM generates** the analysis report via SSE streaming
-5. **Report is rendered** with interactive charts, key metrics, and full Markdown
-6. **Export** as Markdown or professional PDF
+1. **输入股票代码**（例如 AAPL、MSFT、TSLA）并点击"生成"
+2. **后端并行获取所有维度数据**从 Clawby（8+ 并发 API 调用）
+3. **使用 Jinja2 提示模板组装数据**成结构化上下文
+4. **LLM 通过 SSE 流生成**分析报告
+5. **报告通过交互式图表、关键指标和完整 Markdown 呈现**
+6. **导出**为 Markdown 或专业 PDF
 
 ---
 
-## Configuration
+## 配置说明
 
-All settings via `.env`:
+所有设置通过 `.env` 文件配置：
 
-| Variable | Required | Default | Description |
+| 变量 | 必需 | 默认值 | 描述 |
 |---|---|---|---|
-| `CLAWBY_API_KEY` | ✅ | — | [Clawby](https://www.openclawby.com/) API key (free) |
-| `LLM_API_KEY` | ✅ | — | OpenAI / Anthropic API key |
-| `LLM_PROVIDER_TYPE` | ❌ | `openai` | Provider type (`openai` / `anthropic` / `custom_openai`) |
-| `LLM_MODEL` | ❌ | `gpt-4o` | Default model name |
-| `BACKEND_PORT` | ❌ | `8000` | Backend port |
-| `FRONTEND_PORT` | ❌ | `3000` | Frontend port |
+| `CLAWBY_API_KEY` | ✅ | — | [Clawby](https://www.openclawby.com/) API 密钥（免费） |
+| `LLM_API_KEY` | ✅ | — | OpenAI / Anthropic API 密钥 |
+| `LLM_PROVIDER_TYPE` | ❌ | `openai` | 提供商类型（`openai` / `anthropic` / `custom_openai`） |
+| `LLM_MODEL` | ❌ | `gpt-4o` | 默认模型名称 |
+| `BACKEND_PORT` | ❌ | `8000` | 后端端口 |
+| `FRONTEND_PORT` | ❌ | `3000` | 前端端口 |
 
-Additional LLM providers can be added at runtime via **Settings → LLM Providers**.
+额外的 LLM 提供商可以在运行时通过 **设置 → LLM 提供商** 添加。
 
 ---
 
-## Project Structure
+## 项目结构
 
 ```
 stock-report/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI entry point
-│   │   ├── config.py            # Configuration management
-│   │   ├── routers/             # API routes (health, data, report, providers, templates)
-│   │   ├── services/            # Clawby client, LLM bridge, demo data, PDF export
-│   │   ├── models/              # Pydantic schemas
-│   │   ├── presets/             # Built-in templates
-│   │   └── templates/           # Jinja2 prompt templates
+│   │   ├── main.py              # FastAPI 入口
+│   │   ├── config.py            # 配置管理
+│   │   ├── routers/             # API 路由（健康检查、数据、报告、提供商、模板）
+│   │   ├── services/            # Clawby 客户端、LLM 桥接、演示数据、PDF 导出
+│   │   ├── models/              # Pydantic 数据模型
+│   │   ├── presets/             # 内置模板
+│   │   └── templates/           # Jinja2 提示模板
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/
-│   │   ├── app/                 # Next.js pages (home, report, settings, history)
-│   │   ├── components/          # React components (charts, layout, report viewer)
-│   │   ├── lib/                 # API client + SSE streaming
-│   │   └── types/               # TypeScript definitions
+│   │   ├── app/                 # Next.js 页面（主页、报告、设置、历史）
+│   │   ├── components/          # React 组件（图表、布局、报告查看器）
+│   │   ├── lib/                 # API 客户端 + SSE 流
+│   │   └── types/               # TypeScript 类型定义
 │   └── Dockerfile
-├── docker-compose.yml           # One-command deployment
-├── AGENT_SETUP.md               # AI agent installation guide (for Codex, Claude Code, etc.)
-├── DEVELOPMENT.md               # Full development documentation (in Chinese)
-├── README.zh-CN.md              # Chinese documentation
-└── setup.sh                     # One-click setup script
+├── docker-compose.yml           # 一键部署配置
+├── AGENT_SETUP.md               # AI 代理安装指南（用于 Codex、Claude Code 等）
+├── DEVELOPMENT.md               # 完整开发文档（中文）
+├── README.zh-CN.md              # 中文文档
+└── setup.sh                     # 一键设置脚本
 ```
 
 ---
 
-## AI Agent Setup
+## AI 代理设置
 
-This project is designed to be deployed by AI coding agents (Codex, Claude Code, etc.). Just give your agent the repository URL and it will follow the instructions in [`AGENT_SETUP.md`](AGENT_SETUP.md) automatically.
+本项目设计用于由 AI 编码代理（Codex、Claude Code 等）部署。只需给你的代理提供仓库 URL，它就会按照 [`AGENT_SETUP.md`](AGENT_SETUP.md) 中的说明进行操作。
 
-The agent will:
-1. Clone the repo
-2. Ask you for your API keys
-3. Start the services with Docker Compose
-4. Open the browser
-
----
-
-## Development
-
-See [`DEVELOPMENT.md`](DEVELOPMENT.md) (in Chinese) for the complete development plan, API reference, and implementation details.
+代理将：
+1. 克隆仓库
+2. 要求你提供 API 密钥
+3. 使用 Docker Compose 启动服务
+4. 打开浏览器
 
 ---
 
-## License
+## 开发
 
-MIT — see [LICENSE](LICENSE).
+完整的开发计划、API 参考和实现细节请参见 [`DEVELOPMENT.md`](DEVELOPMENT.md)（中文）。
 
 ---
 
-*Not investment advice. Data sourced from Clawby. For informational purposes only.*
+## 许可证
+
+MIT — 详见 [LICENSE](LICENSE)。
+
+---
+
+*非投资建议。数据来自 Clawby。仅供参考之用。*
