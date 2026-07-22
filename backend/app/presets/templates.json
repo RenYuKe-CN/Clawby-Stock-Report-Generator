@@ -1,0 +1,89 @@
+[
+  {
+    "id": "rpt_comprehensive",
+    "name": "全面分析报告",
+    "description": "覆盖行情、做空、暗池、期权、基本面、情绪的完整个股分析",
+    "category": "builtin",
+    "sections": [
+      {"id": "overview", "title": {"zh-CN": "公司概览 & 行情摘要", "en": "Overview & Quote Summary"}, "order": 1, "required": true, "data_dependencies": ["quote"], "chart_hints": []},
+      {"id": "technical", "title": {"zh-CN": "价格走势与技术分析", "en": "Price Action & Technical Analysis"}, "order": 2, "required": true, "data_dependencies": ["bars"], "chart_hints": ["chart-price"]},
+      {"id": "flow", "title": {"zh-CN": "资金流向", "en": "Capital Flow"}, "order": 3, "required": true, "data_dependencies": ["short", "darkpool"], "chart_hints": ["chart-short", "chart-darkpool"]},
+      {"id": "options", "title": {"zh-CN": "期权市场分析", "en": "Options Market Analysis"}, "order": 4, "required": true, "data_dependencies": ["options"], "chart_hints": ["chart-options"]},
+      {"id": "fundamental", "title": {"zh-CN": "基本面分析", "en": "Fundamental Analysis"}, "order": 5, "required": true, "data_dependencies": ["financials"], "chart_hints": []},
+      {"id": "sentiment", "title": {"zh-CN": "市场情绪", "en": "Market Sentiment"}, "order": 6, "required": true, "data_dependencies": ["sentiment"], "chart_hints": ["gauge-sentiment"]},
+      {"id": "risks", "title": {"zh-CN": "投资亮点 & 风险提示", "en": "Highlights & Risks"}, "order": 7, "required": true, "data_dependencies": [], "chart_hints": []},
+      {"id": "score", "title": {"zh-CN": "综合评分", "en": "Overall Score"}, "order": 8, "required": true, "data_dependencies": [], "chart_hints": []}
+    ],
+    "required_data": ["quote", "bars", "short", "darkpool", "options", "financials", "sentiment"],
+    "optional_data": ["corporate"],
+    "language": ["zh-CN", "en"],
+    "output_format": "markdown",
+    "version": 1,
+    "system_prompt": "你是一位专业的美股分析师。你的任务是基于用户提供的真实多维数据，撰写一份结构化的个股分析报告。\n\n## 报告语言\n请使用 {{ language_name }} 撰写全文，包括章节标题。\n\n## 报告结构\n你必须严格按照以下章节顺序输出：\n{% for section in sections %}\n### {{ section.order }}. {{ section.title[language] }}\n{% endfor %}\n\n## 写作要求\n1. 所有数据必须来源于提供的 context，不得编造任何数字。\n2. 每个数据点需给出具体数值（价格、百分比、金额等）。\n3. 对于有时序的数据，描述趋势方向（上升/下降/震荡）和幅度。\n4. 评分每个维度给出 1-10 分并附理由。\n5. 使用专业金融分析语气，避免夸张或营销式表述。\n6. 如果某维度数据为空或不可用，明确说明。\n\n## 输出格式\n使用 Markdown，其中 ## 为一级标题、### 为二级标题。图表位置用占位符标注：![chart:chart_id]\n\n文末标注：\n- 报告生成时间: {{ generation_time }}\n- 数据来源: Clawby\n- Not investment advice.",
+    "user_prompt_template": "请基于以下 {{ ticker }} 的多维数据撰写一份 {{ template_name }}。\n\n## 当前价格 & 行情快照\n```json\n{{ quote_data }}\n```\n\n## 日线走势（近 365 天）\n```json\n{{ bars_data }}\n```\n\n## 做空数据\n```json\n{{ short_data }}\n```\n\n## 暗池数据\n```json\n{{ darkpool_data }}\n```\n\n## 期权链\n```json\n{{ options_data }}\n```\n\n## 财务基本面\n```json\n{{ financials_data }}\n```\n\n## 公司行动\n```json\n{{ corporate_data }}\n```\n\n## Reddit 情绪\n```json\n{{ sentiment_data }}\n```"
+  },
+  {
+    "id": "rpt_quick",
+    "name": "快速概览",
+    "description": "基本面 + 价格 + 做空速览，适合盘中快速判断",
+    "category": "builtin",
+    "sections": [
+      {"id": "overview", "title": {"zh-CN": "行情速览", "en": "Quick Quote"}, "order": 1, "required": true, "data_dependencies": ["quote"], "chart_hints": []},
+      {"id": "technical", "title": {"zh-CN": "技术形态", "en": "Technical Snapshot"}, "order": 2, "required": true, "data_dependencies": ["bars"], "chart_hints": ["chart-price"]},
+      {"id": "fundamental", "title": {"zh-CN": "关键财务指标", "en": "Key Financials"}, "order": 3, "required": true, "data_dependencies": ["financials"], "chart_hints": []},
+      {"id": "score", "title": {"zh-CN": "快速评分", "en": "Quick Score"}, "order": 4, "required": true, "data_dependencies": [], "chart_hints": []}
+    ],
+    "required_data": ["quote", "bars", "financials"],
+    "optional_data": ["short", "sentiment"],
+    "language": ["zh-CN", "en"],
+    "output_format": "markdown",
+    "version": 1,
+    "system_prompt": "你是一位专业的美股分析师。请基于提供的有限数据，撰写一份简洁的快速概览报告。\n\n使用 {{ language_name }} 输出，保持信息密度高、篇幅短小精悍。\n\n文末标注：\n- 报告生成时间: {{ generation_time }}\n- 数据来源: Clawby\n- Not investment advice.",
+    "user_prompt_template": "快速分析 {{ ticker }}：\n\n## 行情\n```json\n{{ quote_data }}\n```\n\n## 日线\n```json\n{{ bars_data }}\n```\n\n## 财务\n```json\n{{ financials_data }}\n```\n\n## 做空（如有）\n```json\n{{ short_data }}\n```\n\n## 情绪（如有）\n```json\n{{ sentiment_data }}\n```"
+  },
+  {
+    "id": "rpt_deep_dive",
+    "name": "深度研究",
+    "description": "10 章节全方位深度报告，适合投资备忘录",
+    "category": "builtin",
+    "sections": [
+      {"id": "executive", "title": {"zh-CN": "执行摘要", "en": "Executive Summary"}, "order": 1, "required": true, "data_dependencies": ["quote"], "chart_hints": []},
+      {"id": "overview", "title": {"zh-CN": "公司概览", "en": "Company Overview"}, "order": 2, "required": true, "data_dependencies": ["quote"], "chart_hints": []},
+      {"id": "macro", "title": {"zh-CN": "宏观与市场环境", "en": "Macro & Market Environment"}, "order": 3, "required": false, "data_dependencies": [], "chart_hints": []},
+      {"id": "fundamental", "title": {"zh-CN": "基本面分析", "en": "Fundamental Analysis"}, "order": 4, "required": true, "data_dependencies": ["financials"], "chart_hints": []},
+      {"id": "technical", "title": {"zh-CN": "技术分析", "en": "Technical Analysis"}, "order": 5, "required": true, "data_dependencies": ["bars"], "chart_hints": ["chart-price"]},
+      {"id": "flow", "title": {"zh-CN": "资金流向分析", "en": "Capital Flow Analysis"}, "order": 6, "required": true, "data_dependencies": ["short", "darkpool"], "chart_hints": ["chart-short", "chart-darkpool"]},
+      {"id": "options", "title": {"zh-CN": "期权市场", "en": "Options Market"}, "order": 7, "required": true, "data_dependencies": ["options"], "chart_hints": ["chart-options"]},
+      {"id": "sentiment", "title": {"zh-CN": "市场情绪", "en": "Market Sentiment"}, "order": 8, "required": true, "data_dependencies": ["sentiment"], "chart_hints": ["gauge-sentiment"]},
+      {"id": "risk", "title": {"zh-CN": "风险评估", "en": "Risk Assessment"}, "order": 9, "required": true, "data_dependencies": [], "chart_hints": []},
+      {"id": "conclusion", "title": {"zh-CN": "结论与建议", "en": "Conclusion & Recommendation"}, "order": 10, "required": true, "data_dependencies": [], "chart_hints": []}
+    ],
+    "required_data": ["quote", "bars", "short", "darkpool", "options", "financials", "sentiment"],
+    "optional_data": ["corporate"],
+    "language": ["zh-CN", "en"],
+    "output_format": "markdown",
+    "version": 1,
+    "system_prompt": "你是资深投资分析师。请基于提供的多维数据，撰写一份完整的深度研究报告。\n\n使用 {{ language_name }} 输出。\n\n## 报告结构\n{% for section in sections %}\n### {{ section.order }}. {{ section.title[language] }}\n{% endfor %}\n\n## 要求\n- 在每个章节提供至少 3-5 个具体数据点支撑\n- 技术分析需涵盖趋势、关键支撑/阻力位、多时间框架\n- 基本面至少包含收入趋势、利润率、EPS 增长、资产负债\n- 资金流需结合做空与暗池综合分析\n- 风险评估需列出 3-5 个具体风险因素\n- 结论给出明确的多空判断（看多/中性/看空）和 3 种情景目标价\n\n文末标注：\n- 报告生成时间: {{ generation_time }}\n- 数据来源: Clawby\n- Not investment advice.",
+    "user_prompt_template": "请撰写 {{ ticker }} 的深度研究报告。\n\n## 行情数据\n```json\n{{ quote_data }}\n```\n\n## 技术面数据\n```json\n{{ bars_data }}\n```\n\n## 做空数据\n```json\n{{ short_data }}\n```\n\n## 暗池数据\n```json\n{{ darkpool_data }}\n```\n\n## 期权数据\n```json\n{{ options_data }}\n```\n\n## 财务数据\n```json\n{{ financials_data }}\n```\n\n## 公司行动\n```json\n{{ corporate_data }}\n```\n\n## 情绪数据\n```json\n{{ sentiment_data }}\n```"
+  },
+  {
+    "id": "rpt_earnings",
+    "name": "财报解读",
+    "description": "财报发布后的快速解读，聚焦财务变化和市场反应",
+    "category": "builtin",
+    "sections": [
+      {"id": "overview", "title": {"zh-CN": "财报概览", "en": "Earnings Overview"}, "order": 1, "required": true, "data_dependencies": ["quote", "financials"], "chart_hints": []},
+      {"id": "revenue", "title": {"zh-CN": "收入分析", "en": "Revenue Analysis"}, "order": 2, "required": true, "data_dependencies": ["financials"], "chart_hints": []},
+      {"id": "profitability", "title": {"zh-CN": "盈利与利润率", "en": "Profitability & Margins"}, "order": 3, "required": true, "data_dependencies": ["financials"], "chart_hints": []},
+      {"id": "eps", "title": {"zh-CN": "每股收益", "en": "Earnings Per Share"}, "order": 4, "required": true, "data_dependencies": ["financials"], "chart_hints": []},
+      {"id": "sentiment", "title": {"zh-CN": "市场反应", "en": "Market Reaction"}, "order": 5, "required": true, "data_dependencies": ["quote", "sentiment"], "chart_hints": []}
+    ],
+    "required_data": ["quote", "financials", "sentiment"],
+    "optional_data": ["bars", "short"],
+    "language": ["zh-CN", "en"],
+    "output_format": "markdown",
+    "version": 1,
+    "system_prompt": "你是一位关注美股财报的金融分析师。请基于提供的数据，撰写一份财报解读报告。\n\n使用 {{ language_name }} 输出。\n\n## 报告结构\n{% for section in sections %}\n### {{ section.order }}. {{ section.title[language] }}\n{% endfor %}\n\n## 要求\n- 重点对比同比（YoY）和环比（QoQ）变化\n- 对超预期或不及预期的指标给出点评\n- 最后给出短期和中期展望\n\n文末标注：\n- 报告生成时间: {{ generation_time }}\n- 数据来源: Clawby\n- Not investment advice.",
+    "user_prompt_template": "请解读 {{ ticker }} 的财报数据：\n\n## 行情数据\n```json\n{{ quote_data }}\n```\n\n## 财务数据\n```json\n{{ financials_data }}\n```\n\n## 情绪数据\n```json\n{{ sentiment_data }}\n```\n\n## 日线（如有）\n```json\n{{ bars_data }}\n```\n\n## 做空（如有）\n```json\n{{ short_data }}\n```"
+  }
+]
